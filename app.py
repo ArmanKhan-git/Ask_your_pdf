@@ -13,17 +13,15 @@ from typing import TypedDict, Annotated
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.documents import Document
 
-from openai import OpenAI
 
 from dotenv import load_dotenv
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI,
 from langchain_huggingface import HuggingFaceEmbeddings  # if using HF for embeddings
-from langchain_openrouter import ChatOpenRouter
-from langchain_openai import OpenAIEmbeddings
+
 
 
 from langchain_community.vectorstores import FAISS
