@@ -1,0 +1,27 @@
+# --- Environment / secrets ---
+.env
+.streamlit/secrets.toml
+
+# --- Virtual environment ---
+venv_311/
+
+# --- Old experiments / leftover artifacts, not needed by the deployed app ---
+chroma_db/
+faiss_index/
+chunks.pkl
+docs/
+index.py
+app_temp.py
+rag.ipynb
+
+# --- Python cache ---
+__pycache__/
+*.pyc
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS / IDE junk ---
+.DS_Store
+.vscode/
+.idea/
