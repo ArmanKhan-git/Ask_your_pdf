@@ -12,3 +12,4 @@ faiss-cpu
 rank-bm25
 pypdf
 python-dotenv
+torchvision
