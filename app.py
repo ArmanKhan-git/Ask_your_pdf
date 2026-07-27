@@ -35,7 +35,7 @@ load_dotenv()
 @st.cache_resource
 def get_embedding_model():
     return HuggingFaceEmbeddings(
-        model_name="BAAI/bge-base-en-v1.5"
+        model_name="BAAI/bge-base-en-v1.5",
     )
     # return GoogleGenerativeAIEmbeddings(model="gemini-embedding-001")
     # return OpenAIEmbeddings(model="qwen/qwen3-embedding-8b",
@@ -44,7 +44,9 @@ def get_embedding_model():
 
 @st.cache_resource
 def get_llm():
-    return ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0)
+    return ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0,
+            google_api_key=os.getenv("GEMINI_API_KEY")
+)
     # return ChatOpenRouter(model="qwen/qwen3.5-flash-02-23",
     #                       api_key=os.getenv("OPEN_ROUTER"),temperature=0)
 
