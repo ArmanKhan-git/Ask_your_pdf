@@ -291,13 +291,14 @@ if "graph" in st.session_state:
         st.chat_message(msg["role"]).write(msg["content"])
 
     def stream_response(prompt):
+        chunk_yielded = False
         try:
             for msg_chunk, metadata in st.session_state["graph"].stream(
                 {"messages": [HumanMessage(content=prompt)]},
                 config=st.session_state["config"],
                 stream_mode="messages",
             ):
-                if metadata.get("langgraph_node") in ["generate", "no_answer"]:
+                if metadata.get("langgraph_node") == "generate":
                     chunk_content = msg_chunk.content
                     if isinstance(chunk_content, list):
                         text_chunk = "".join(
@@ -305,10 +306,18 @@ if "graph" in st.session_state:
                             for part in chunk_content
                         )
                         if text_chunk:
+                            chunk_yielded = True
                             yield text_chunk
                     elif isinstance(chunk_content, str):
                         if chunk_content:
+                            chunk_yielded = True
                             yield chunk_content
+
+            # Fallback if no LLM streaming tokens were produced (e.g., no_answer node executed)
+            if not chunk_yielded:
+                final_state = st.session_state["graph"].get_state(st.session_state["config"]).values
+                answer = final_state.get("answer", "I couldn't find enough information in the indexed documents to answer this question.")
+                yield answer
 
         except Exception as e:
             error_text = str(e)
