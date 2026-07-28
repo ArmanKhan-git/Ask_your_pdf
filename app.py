@@ -311,8 +311,15 @@ if "graph" in st.session_state:
                     elif isinstance(chunk_content, str):
                         if chunk_content:
                             yield chunk_content
-        except ResourceExhausted:
-            yield "⚠️ Daily quota for Gemini has been reached. Please try again later."
+
+        except Exception as e:
+            error_text = str(e)
+            if "429" in error_text or "RESOURCE_EXHAUSTED" in error_text:
+                yield "⚠️ Daily quota for Gemini has been reached. Please try again later."
+            elif "503" in error_text or "UNAVAILABLE" in error_text:
+                yield "⚠️ Gemini is currently experiencing high demand. Please try again in a moment."
+            else:
+                yield f"⚠️ Something went wrong: {error_text}"
 
     if prompt := st.chat_input("Ask about your document"):
         st.chat_message("user").write(prompt)
