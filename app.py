@@ -46,7 +46,7 @@ def get_embedding_model():
 
 @st.cache_resource
 def get_llm():
-    return ChatGoogleGenerativeAI(model="gemini-3.5-flash-Lite", temperature=0,
+    return ChatGoogleGenerativeAI(model="gemini-3.5-flash-lite", temperature=0,
             google_api_key=os.getenv("GEMINI_API_KEY")
 )
     # return ChatOpenRouter(model="qwen/qwen3.5-flash-02-23",
