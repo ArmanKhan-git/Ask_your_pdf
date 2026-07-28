@@ -221,7 +221,6 @@ def build_graph(compression_retriever, llm_model):
             answer_text = str(content)
 
         return {
-            "messages": [AIMessage(content=answer_text)],
             "answer": answer_text,
             "pages": pages,
         }
@@ -229,7 +228,6 @@ def build_graph(compression_retriever, llm_model):
     def no_answer(state: GraphState):
         msg = "I couldn't find enough information in the indexed documents to answer this question."
         return {
-            "messages": [AIMessage(content=msg)],
             "answer": msg,
             "pages": [],
         }
