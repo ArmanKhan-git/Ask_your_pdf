@@ -30,6 +30,8 @@ from langchain_classic.retrievers import EnsembleRetriever
 from langchain_classic.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain_cohere import CohereRerank
 
+from google.api_core.exceptions import ResourceExhausted
+
 load_dotenv()
 
 @st.cache_resource
@@ -291,23 +293,26 @@ if "graph" in st.session_state:
         st.chat_message(msg["role"]).write(msg["content"])
 
     def stream_response(prompt):
-        for msg_chunk, metadata in st.session_state["graph"].stream(
-            {"messages": [HumanMessage(content=prompt)]},
-            config=st.session_state["config"],
-            stream_mode="messages",
-        ):
-            if metadata.get("langgraph_node") in ["generate", "no_answer"]:
-                chunk_content = msg_chunk.content
-                if isinstance(chunk_content, list):
-                    text_chunk = "".join(
-                        part.get("text", "") if isinstance(part, dict) else (part if isinstance(part, str) else "")
-                        for part in chunk_content
-                    )
-                    if text_chunk:
-                        yield text_chunk
-                elif isinstance(chunk_content, str):
-                    if chunk_content:
-                        yield chunk_content
+        try:
+            for msg_chunk, metadata in st.session_state["graph"].stream(
+                {"messages": [HumanMessage(content=prompt)]},
+                config=st.session_state["config"],
+                stream_mode="messages",
+            ):
+                if metadata.get("langgraph_node") in ["generate", "no_answer"]:
+                    chunk_content = msg_chunk.content
+                    if isinstance(chunk_content, list):
+                        text_chunk = "".join(
+                            part.get("text", "") if isinstance(part, dict) else (part if isinstance(part, str) else "")
+                            for part in chunk_content
+                        )
+                        if text_chunk:
+                            yield text_chunk
+                    elif isinstance(chunk_content, str):
+                        if chunk_content:
+                            yield chunk_content
+        except ResourceExhausted:
+            yield "⚠️ Daily quota for Gemini has been reached. Please try again later."
 
     if prompt := st.chat_input("Ask about your document"):
         st.chat_message("user").write(prompt)
