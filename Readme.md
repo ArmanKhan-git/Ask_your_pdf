@@ -5,6 +5,8 @@ An agentic Retrieval-Augmented Generation (RAG) app that lets you upload any PDF
 Unlike a naive "retrieve-then-generate" chatbot, this system actively checks its own retrieval quality before answering, and refuses to answer when the document genuinely doesn't contain the information — rather than guessing.
 
 ---
+## 🚀 [Live Demo](https://askyourpdfqna.streamlit.app/)
+---
 
 ## ✨ Features
 
